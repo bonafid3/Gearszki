@@ -10,7 +10,6 @@
 #include "svg.h"
 
 #include "clipper.h"
-#include "mygraphicsscene.h"
 
 #include "cglwidget.h"
 
