@@ -147,7 +147,6 @@ void Dialog::drawScene()
 
 void Dialog::onGlInitialized()
 {
-    qd << "gl init";
     drawScene();
 }
 
@@ -188,14 +187,10 @@ sPoint Dialog::calcAngleForPoint(QVector2D v)
 
 float Dialog::angleBetween(QVector2D v1, QVector2D v2)
 {
-    float res;
-
     float det = v1.x()*v2.y() - v1.y()*v2.x();
     float dot = v1.x()*v2.x() + v1.y()*v2.y();
 
-    res = atan2(det, dot);
-    if(res < 0) res += static_cast<float>(M_PI)*2; // unroll to 0-360
-    return res;
+    return atan2(det, dot);
 }
 
 std::vector<GLfloat> Dialog::compileText(const QString text, const QVector2D pos)
@@ -251,7 +246,7 @@ void Dialog::drawSplines()
         float t = mPath.getT(dist, alpha, tension);
 
         if(t<0.f) {
-            qDebug() << dist << "is over" << totalLen;
+            qd << dist << "is larger than" << totalLen;
             continue;
         }
 
@@ -260,7 +255,7 @@ void Dialog::drawSplines()
 
         float sh = sample2(normalized);
 
-        //qDebug() << "sampled height:" << sh;
+        //qd << "sampled height:" << sh;
 
         QVector2D p = mPath.getSplinePoint(t, alpha, tension);
         QVector2D s = mPath.getSplineGradient(t, alpha, tension);
@@ -362,7 +357,7 @@ float Dialog::iterate(float ccdist)
     float cntAngle1 = 0.f;
     float cntAngle2 = 0.f;
 
-    //qDebug() << "iterate using ccdist:" << ccdist;
+    //qd << "iterate using ccdist:" << ccdist;
 
     for(size_t i=0; i<mSpline.size(); ++i) {
         size_t j = i+1; if(j==mSpline.size()) j=0;
@@ -400,7 +395,7 @@ void Dialog::on_mCalculateButton_clicked()
     float res;
     do {
         res = r2d(iterate(ccdist));
-        qd << res << res;
+        //qd << res << res;
         ccdist -= pd(360.f, res);
     } while (fabs(360.0f - res) > 0.005f);
 
@@ -428,7 +423,7 @@ void Dialog::on_mCalculateButton_clicked()
     float textHeight = mSVG.mPoints[65].height();
     float textHeight3 = textHeight * 3;
 
-    qDebug() << "spline size:" << mSpline.size();
+    //qd << "spline size:" << mSpline.size();
 
     for(size_t i=0; i<mSpline.size(); ++i) {
         size_t j = i+1; if(j==mSpline.size()) j=0;
@@ -571,7 +566,7 @@ void Dialog::writeDXF(QString fname, Path poly)
 
 QString Dialog::DXF_Line(int id, float x1, float y1, float z1, float x2, float y2, float z2)
 {
-    qd << x1 << y1 << x2 << y2;
+    //qd << x1 << y1 << x2 << y2;
 
     char b[4096]={0};
     int length;
